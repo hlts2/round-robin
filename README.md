@@ -14,9 +14,9 @@ go get github.com/hlts2/round-robin
 
 ```go
 next, err := RoundRobin(Servers {
-	"server-1",
-  "server-2",
-  "server-3",
+    "server-1",
+    "server-2",
+    "server-3",
 })
 
 next() // server-1
