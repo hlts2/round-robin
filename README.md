@@ -1,5 +1,5 @@
 # round-robin
-round-robin is round robin algorithm written in golang
+round-robin is balancing algorithm written in golang
 
 ## Requrement
 Go (>= 1.8)
