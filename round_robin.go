@@ -3,7 +3,7 @@ package roundrobin
 import (
 	"errors"
 
-	"github.com/hlts2/gomaphore"
+	"github.com/hlts2/lock-free"
 )
 
 // ErrServersNotExists is the error that servers dose not exists
@@ -18,14 +18,14 @@ func RoundRobin(servers Servers) (func() string, error) {
 		return nil, ErrServersNotExists
 	}
 
-	semaphore := new(gomaphore.Gomaphore)
+	lf := lockfree.New()
 
 	idx := 0
 
 	var server string
 
 	return func() string {
-		semaphore.Wait()
+		lf.Wait()
 
 		if idx >= len(servers) {
 			idx = 0
@@ -36,7 +36,7 @@ func RoundRobin(servers Servers) (func() string, error) {
 		idx++
 
 		// I do not use defer, decause defer is slow.
-		semaphore.Signal()
+		lf.Signal()
 		return server
 	}, nil
 }
