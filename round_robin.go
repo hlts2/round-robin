@@ -2,7 +2,8 @@ package roundrobin
 
 import (
 	"errors"
-	"sync/atomic"
+
+	"github.com/hlts2/gomaphore"
 )
 
 // ErrServersNotExists is the error that servers dose not exists
@@ -17,18 +18,14 @@ func RoundRobin(servers Servers) (func() string, error) {
 		return nil, ErrServersNotExists
 	}
 
-	var flg int32
+	semaphore := new(gomaphore.Gomaphore)
 
 	idx := 0
 
 	var server string
 
 	return func() string {
-		for {
-			if flg == 0 && atomic.CompareAndSwapInt32(&flg, 0, 1) {
-				break
-			}
-		}
+		semaphore.Wait()
 
 		if idx >= len(servers) {
 			idx = 0
@@ -39,7 +36,7 @@ func RoundRobin(servers Servers) (func() string, error) {
 		idx++
 
 		// I do not use defer, decause defer is slow.
-		flg = 0
+		semaphore.Signal()
 		return server
 	}, nil
 }
