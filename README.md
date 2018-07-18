@@ -13,6 +13,8 @@ go get github.com/hlts2/round-robin
 ## Example
 
 ```go
+
+// Servers is []string type
 next, err := RoundRobin(Servers {
     "server-1",
     "server-2",
