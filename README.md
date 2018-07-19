@@ -13,18 +13,21 @@ go get github.com/hlts2/round-robin
 ## Example
 
 ```go
-
-// Servers is []string type
-next, err := RoundRobin(Servers {
+rr, err := roundrobin.New([]string{
     "server-1",
     "server-2",
     "server-3",
 })
 
-next() // server-1
-next() // server-2
-next() // server-3
-next() // server-1
-next() // server-2
-next() // server-3
+rr.Next() // server-1
+rr.Next() // server-2
+rr.Next() // server-3
+rr.Next() // server-1
+rr.Next() // server-2
+rr.Next() // server-3
 ```
+## Author
+[hlts2](https://github.com/hlts2)
+
+## LICENSE
+round-robin released under MIT license, refer [LICENSE](https://github.com/hlts2/round-robin/blob/master/LICENSE) file.

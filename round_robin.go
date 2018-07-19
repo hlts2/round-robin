@@ -15,33 +15,33 @@ type RoundRobin interface {
 }
 
 type roundrobin struct {
-	addresses []string
-	lf        lockfree.LockFree
-	idx       int
+	addrs []string
+	lf    lockfree.LockFree
+	idx   int
 }
 
 // New returns RoundRobin(*roundrobin) object
-func New(addresses []string) (RoundRobin, error) {
-	if len(addresses) == 0 {
+func New(addrs []string) (RoundRobin, error) {
+	if len(addrs) == 0 {
 		return nil, ErrServersNotExists
 	}
 
 	return &roundrobin{
-		addresses: addresses,
-		lf:        lockfree.New(),
-		idx:       0,
+		addrs: addrs,
+		lf:    lockfree.New(),
+		idx:   0,
 	}, nil
 }
 
-// RoundRobin returns round-robin closure
+// Next returns next address
 func (r *roundrobin) Next() string {
 	r.lf.Wait()
 
-	if r.idx >= len(r.addresses) {
+	if r.idx >= len(r.addrs) {
 		r.idx = 0
 	}
 
-	address := r.addresses[r.idx]
+	address := r.addrs[r.idx]
 	r.idx++
 
 	r.lf.Signal()
