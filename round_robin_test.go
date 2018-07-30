@@ -6,20 +6,20 @@ import (
 
 func TestRoundRobin(t *testing.T) {
 	tests := []struct {
-		servers   Servers
+		servers   []string
 		count     int
 		errExists bool
-		expected  Servers
+		expected  []string
 	}{
 		{
-			servers: Servers{
+			servers: []string{
 				"server-1",
 				"server-2",
 				"server-3",
 			},
 			count:     4,
 			errExists: false,
-			expected: Servers{
+			expected: []string{
 				"server-1",
 				"server-2",
 				"server-3",
@@ -27,15 +27,15 @@ func TestRoundRobin(t *testing.T) {
 			},
 		},
 		{
-			servers:   Servers{},
+			servers:   []string{},
 			count:     0,
 			errExists: true,
-			expected:  Servers{},
+			expected:  []string{},
 		},
 	}
 
 	for i, test := range tests {
-		next, err := RoundRobin(test.servers)
+		rr, err := New(test.servers)
 
 		errExists := !(err == nil)
 
@@ -43,10 +43,10 @@ func TestRoundRobin(t *testing.T) {
 			t.Errorf("tests[%d] - RoundRobin errExists is wrong. expected: %v, got: %v", i, test.errExists, errExists)
 		}
 
-		gots := make(Servers, 0, test.count)
+		gots := make([]string, 0, test.count)
 
 		for j := 0; j < test.count; j++ {
-			gots = append(gots, next())
+			gots = append(gots, rr.Next())
 		}
 
 		for j, expected := range test.expected {
