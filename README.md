@@ -13,18 +13,19 @@ go get github.com/hlts2/round-robin
 ## Example
 
 ```go
-rr, err := roundrobin.New([]string{
-    "server-1",
-    "server-2",
-    "server-3",
+rr, _ := roundrobin.New([]*url.URL{
+    {Host: "192.168.33.10"},
+    {Host: "192.168.33.11"},
+    {Host: "192.168.33.12"},
+    {Host: "192.168.33.13"},
 })
 
-rr.Next() // server-1
-rr.Next() // server-2
-rr.Next() // server-3
-rr.Next() // server-1
-rr.Next() // server-2
-rr.Next() // server-3
+rr.Next() // {Host: "192.168.33.10"}
+rr.Next() // {Host: "192.168.33.11"}
+rr.Next() // {Host: "192.168.33.12"}
+rr.Next() // {Host: "192.168.33.13"}
+rr.Next() // {Host: "192.168.33.10"}
+rr.Next() // {Host: "192.168.33.11"}
 ```
 ## Author
 [hlts2](https://github.com/hlts2)
