@@ -1,8 +1,9 @@
 language: go
 go:
-  - "1.8"
-  - "1.9"
-  - "1.10.x"
+  - "1.11.x"
   - master
+end:
+  - GO111MODULE=on
+install: true
 script:
   - go test -v ./
