@@ -1,9 +1,6 @@
 # round-robin
 round-robin is balancing algorithm written in golang
 
-## Requrement
-Go (>= 1.8)
-
 ## Installation
 
 ```shell
