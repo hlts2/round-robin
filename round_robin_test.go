@@ -1,8 +1,10 @@
 package roundrobin
 
 import (
+	"fmt"
 	"net/url"
 	"reflect"
+	"sync"
 	"testing"
 )
 
@@ -50,4 +52,69 @@ func TestRoundRobin(t *testing.T) {
 			t.Errorf("tests[%d] - RoundRobin is wrong. want: %v, got: %v", i, want, got)
 		}
 	}
+}
+
+func BenchmarkRoundRobinSync(b *testing.B) {
+	resources := []*url.URL{
+		&url.URL{Host: "127.0.0.1"},
+		&url.URL{Host: "127.0.0.2"},
+		&url.URL{Host: "127.0.0.3"},
+		&url.URL{Host: "127.0.0.4"},
+		&url.URL{Host: "127.0.0.5"},
+		&url.URL{Host: "127.0.0.6"},
+		&url.URL{Host: "127.0.0.7"},
+		&url.URL{Host: "127.0.0.8"},
+		&url.URL{Host: "127.0.0.9"},
+		&url.URL{Host: "127.0.0.10"},
+	}
+
+	for i := 1; i < len(resources)+1; i++ {
+		b.Run(fmt.Sprintf("RoundRobinSliceOfSize(%d)", i), func(b *testing.B) {
+			rr, err := New(resources[:i])
+			if err != nil {
+				b.Fatal(err)
+			}
+			// Adding WaitGroup complexity as this helps in comparing Sync and Async RoundRobinAccess (see BenchmarkRoundRobinASync as well)
+			wg := &sync.WaitGroup{}
+			for i := 0; i < b.N; i++ {
+				wg.Add(1)
+				defer wg.Done()
+				rr.Next()
+			}
+		})
+	}
+}
+
+func BenchmarkRoundRobinASync(b *testing.B) {
+	resources := []*url.URL{
+		&url.URL{Host: "127.0.0.1"},
+		&url.URL{Host: "127.0.0.2"},
+		&url.URL{Host: "127.0.0.3"},
+		&url.URL{Host: "127.0.0.4"},
+		&url.URL{Host: "127.0.0.5"},
+		&url.URL{Host: "127.0.0.6"},
+		&url.URL{Host: "127.0.0.7"},
+		&url.URL{Host: "127.0.0.8"},
+		&url.URL{Host: "127.0.0.9"},
+		&url.URL{Host: "127.0.0.10"},
+	}
+
+	for i := 1; i < len(resources)+1; i++ {
+		b.Run(fmt.Sprintf("RoundRobinSliceOfSize(%d)", i), func(b *testing.B) {
+			rr, err := New(resources[:i])
+			if err != nil {
+				b.Fatal(err)
+			}
+			wg := &sync.WaitGroup{}
+			for i := 0; i < b.N; i++ {
+				wg.Add(1)
+				go func() {
+					defer wg.Done()
+					rr.Next()
+				}()
+			}
+			wg.Wait()
+		})
+	}
+
 }
