@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/url"
 	"sync"
+	"sync/atomic"
 )
 
 // ErrServersNotExists is the error that servers dose not exists
@@ -17,7 +18,7 @@ type RoundRobin interface {
 type roundrobin struct {
 	urls []*url.URL
 	mu   *sync.Mutex
-	next int
+	next uint32
 }
 
 // New returns RoundRobin implementation(*roundrobin).
@@ -34,9 +35,6 @@ func New(urls []*url.URL) (RoundRobin, error) {
 
 // Next returns next address
 func (r *roundrobin) Next() *url.URL {
-	r.mu.Lock()
-	sc := r.urls[r.next]
-	r.next = (r.next + 1) % len(r.urls)
-	r.mu.Unlock()
-	return sc
+	n := atomic.AddUint32(&r.next, 1)
+	return r.urls[(int(n)-1)%len(r.urls)]
 }
