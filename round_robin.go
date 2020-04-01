@@ -3,7 +3,6 @@ package roundrobin
 import (
 	"errors"
 	"net/url"
-	"sync"
 	"sync/atomic"
 )
 
@@ -17,7 +16,6 @@ type RoundRobin interface {
 
 type roundrobin struct {
 	urls []*url.URL
-	mu   *sync.Mutex
 	next uint32
 }
 
@@ -29,7 +27,6 @@ func New(urls []*url.URL) (RoundRobin, error) {
 
 	return &roundrobin{
 		urls: urls,
-		mu:   new(sync.Mutex),
 	}, nil
 }
 
