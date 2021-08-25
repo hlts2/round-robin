@@ -20,7 +20,7 @@ type roundrobin struct {
 }
 
 // New returns RoundRobin implementation(*roundrobin).
-func New(urls []*url.URL) (RoundRobin, error) {
+func New(urls ...*url.URL) (RoundRobin, error) {
 	if len(urls) == 0 {
 		return nil, ErrServersNotExists
 	}
