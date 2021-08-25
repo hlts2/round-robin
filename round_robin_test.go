@@ -37,7 +37,7 @@ func TestRoundRobin(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		rr, err := New(test.urls)
+		rr, err := New(test.urls...)
 
 		if got, want := !(err == nil), test.iserr; got != want {
 			t.Errorf("tests[%d] - RoundRobin iserr is wrong. want: %v, but got: %v", i, test.want, got)
@@ -56,21 +56,21 @@ func TestRoundRobin(t *testing.T) {
 
 func BenchmarkRoundRobinSync(b *testing.B) {
 	resources := []*url.URL{
-		&url.URL{Host: "127.0.0.1"},
-		&url.URL{Host: "127.0.0.2"},
-		&url.URL{Host: "127.0.0.3"},
-		&url.URL{Host: "127.0.0.4"},
-		&url.URL{Host: "127.0.0.5"},
-		&url.URL{Host: "127.0.0.6"},
-		&url.URL{Host: "127.0.0.7"},
-		&url.URL{Host: "127.0.0.8"},
-		&url.URL{Host: "127.0.0.9"},
-		&url.URL{Host: "127.0.0.10"},
+		{Host: "127.0.0.1"},
+		{Host: "127.0.0.2"},
+		{Host: "127.0.0.3"},
+		{Host: "127.0.0.4"},
+		{Host: "127.0.0.5"},
+		{Host: "127.0.0.6"},
+		{Host: "127.0.0.7"},
+		{Host: "127.0.0.8"},
+		{Host: "127.0.0.9"},
+		{Host: "127.0.0.10"},
 	}
 
 	for i := 1; i < len(resources)+1; i++ {
 		b.Run(fmt.Sprintf("RoundRobinSliceOfSize(%d)", i), func(b *testing.B) {
-			rr, err := New(resources[:i])
+			rr, err := New(resources[:i]...)
 			if err != nil {
 				b.Fatal(err)
 			}
@@ -87,21 +87,21 @@ func BenchmarkRoundRobinSync(b *testing.B) {
 
 func BenchmarkRoundRobinASync(b *testing.B) {
 	resources := []*url.URL{
-		&url.URL{Host: "127.0.0.1"},
-		&url.URL{Host: "127.0.0.2"},
-		&url.URL{Host: "127.0.0.3"},
-		&url.URL{Host: "127.0.0.4"},
-		&url.URL{Host: "127.0.0.5"},
-		&url.URL{Host: "127.0.0.6"},
-		&url.URL{Host: "127.0.0.7"},
-		&url.URL{Host: "127.0.0.8"},
-		&url.URL{Host: "127.0.0.9"},
-		&url.URL{Host: "127.0.0.10"},
+		{Host: "127.0.0.1"},
+		{Host: "127.0.0.2"},
+		{Host: "127.0.0.3"},
+		{Host: "127.0.0.4"},
+		{Host: "127.0.0.5"},
+		{Host: "127.0.0.6"},
+		{Host: "127.0.0.7"},
+		{Host: "127.0.0.8"},
+		{Host: "127.0.0.9"},
+		{Host: "127.0.0.10"},
 	}
 
 	for i := 1; i < len(resources)+1; i++ {
 		b.Run(fmt.Sprintf("RoundRobinSliceOfSize(%d)", i), func(b *testing.B) {
-			rr, err := New(resources[:i])
+			rr, err := New(resources[:i]...)
 			if err != nil {
 				b.Fatal(err)
 			}
@@ -116,5 +116,4 @@ func BenchmarkRoundRobinASync(b *testing.B) {
 			wg.Wait()
 		})
 	}
-
 }
