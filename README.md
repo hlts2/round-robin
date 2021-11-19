@@ -10,12 +10,12 @@ go get github.com/hlts2/round-robin
 ## Example
 
 ```go
-rr, _ := roundrobin.New([]*url.URL{
-    {Host: "192.168.33.10"},
-    {Host: "192.168.33.11"},
-    {Host: "192.168.33.12"},
-    {Host: "192.168.33.13"},
-})
+rr, _ := roundrobin.New(
+    &url.URL{Host: "192.168.33.10"},
+    &url.URL{Host: "192.168.33.11"},
+    &url.URL{Host: "192.168.33.12"},
+    &url.URL{Host: "192.168.33.13"},
+)
 
 rr.Next() // {Host: "192.168.33.10"}
 rr.Next() // {Host: "192.168.33.11"}
