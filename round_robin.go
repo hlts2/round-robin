@@ -33,5 +33,5 @@ func New(urls ...*url.URL) (RoundRobin, error) {
 // Next returns next address
 func (r *roundrobin) Next() *url.URL {
 	n := atomic.AddUint32(&r.next, 1)
-	return r.urls[(int(n)-1)%len(r.urls)]
+	return r.urls[(int(n)%len(r.urls)]
 }
